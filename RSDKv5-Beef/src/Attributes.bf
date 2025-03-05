@@ -40,7 +40,7 @@ public struct RegisterObjectAttribute : Attribute, IOnTypeInit
 #endif
         events.Append("() => { Serialize.Internal<Self>();Self.Serialize(); },");
 #if RETRO_REV0U
-        events.Append("(sVars) => Self.StaticLoad((.)sVars)");
+        events.Append("(sVars) => { GameObject.InitStatic(sVars);Self.StaticLoad((.)sVars); }");
 #else
         events.Append("null");
 #endif
@@ -102,7 +102,7 @@ public struct ModRegisterObjectAttribute : Attribute, IOnTypeInit
 #endif
         events.Append("() => { Serialize.Internal<Self>();Self.Serialize(); },");
 #if RETRO_REV0U
-        events.Append("(sVars) => Self.StaticLoad((.)sVars)");
+        events.Append("(sVars) => { GameObject.InitStatic(sVars);Self.StaticLoad((.)sVars); }");
 #else
         events.Append("null");
 #endif
