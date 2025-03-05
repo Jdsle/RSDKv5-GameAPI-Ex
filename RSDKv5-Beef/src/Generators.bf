@@ -89,7 +89,6 @@ public class EntityGenerator1 : System.Compiler.Generator
 				#if RETRO_REV0U
 				    public static void StaticLoad(Static* sVars)
 				    {{
-				        GameObject.InitStatic(sVars);
 				    }}
 				#endif
 				}}
@@ -191,7 +190,6 @@ public class EntityGenerator2 : System.Compiler.Generator
         	#if RETRO_REV0U
         	    public static void StaticLoad(Static* sVars)
         	    {{
-        	        GameObject.InitStatic(sVars);
         	    }}
         	#endif
         	}}
