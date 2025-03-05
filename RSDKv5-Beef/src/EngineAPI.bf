@@ -776,9 +776,79 @@ public enum StatusCodes
 #endif
 }
 
+public static class EngineAPI
+{
+    public static void** registerGlobals    = null;
+    public static int32 registerGlobalsSize = 0;
+
+    public static function void(void* globals) registerGlobalsInitCB = null;
+
+    public static void RegisterGlobals(void** globals, int32 size, function void(void* globals) initCB)
+    {
+        registerGlobals       = globals;
+        registerGlobalsSize   = size;
+        registerGlobalsInitCB = initCB;
+    }
+
+    public static void Link(EngineInfo* info)
+    {
+        InitEngineInfo(info);
+
+        if (registerGlobals != null)
+        {
+        #if RETRO_REV0U
+            RSDKTable.RegisterGlobalVariables(registerGlobals, registerGlobalsSize, => registerGlobalsInitCB);
+        #else
+            RSDKTable.RegisterGlobalVariables(registerGlobals, registerGlobalsSize);
+        #endif
+        }
+
+        for (int32 r = 0; r < GameObject.registerObjectListCount; ++r)
+        {
+            var registration = &GameObject.registerObjectList[r];
+
+            if (registration.name != null)
+            {
+#if RETRO_USE_MOD_LOADER
+                if (registration.isModded) {
+                    modTable.RegisterObject(registration.staticVars, registration.modStaticVars, registration.name, registration.entityClassSize,
+                        registration.staticClassSize, registration.modStaticClassSize, => registration.update,
+                        => registration.lateUpdate, => registration.staticUpdate, => registration.draw, => registration.create,
+                        => registration.stageLoad, => registration.editorLoad, => registration.editorDraw, => registration.serialize,
+                #if RETRO_REV0U
+                        => registration.staticLoad,
+                #endif
+                        registration.inherit);
+                    continue;
+                }
+#endif
+
+                RSDKTable.RegisterObject(registration.staticVars, registration.name, registration.entityClassSize, registration.staticClassSize,
+                    => registration.update, => registration.lateUpdate, => registration.staticUpdate, => registration.draw,
+                    => registration.create, => registration.stageLoad, => registration.editorLoad, => registration.editorDraw,
+                    => registration.serialize
+                #if RETRO_REV0U
+                    , => registration.staticLoad
+                #endif
+                    );
+            }
+        }
+
+#if RETRO_REV02
+        for (int32 r = 0; r < GameObject.registerStaticListCount; ++r)
+        {
+            var registration = &GameObject.registerStaticList[r];
+
+            if (registration.name != null)
+                RSDKTable.RegisterStaticVariables(registration.staticVars, registration.name, registration.staticClassSize);
+        }
+#endif
+    }
+}
+
 static
 {
-    public static void InitEngineInfo(EngineInfo* info)
+    internal static void InitEngineInfo(EngineInfo* info)
     {
         RSDKTable = info.RSDKTable;
 #if RETRO_REV02
