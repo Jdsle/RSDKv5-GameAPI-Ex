@@ -46,7 +46,7 @@ public enum ForeachGroups
 {
     GROUP_ALL,
 
-    GROUP_CUSTOM0 = Const.TYPE_COUNT,
+    GROUP_CUSTOM0 = TYPE_COUNT,
     GROUP_CUSTOM1,
     GROUP_CUSTOM2,
     GROUP_CUSTOM3,
@@ -418,11 +418,11 @@ public enum TileCollisionModes : uint8
     }
 
     public static int32 registerObjectListCount = 0;
-    public static ObjectRegistration[Const.OBJECT_COUNT] registerObjectList;
+    public static ObjectRegistration[OBJECT_COUNT] registerObjectList;
 
 #if RETRO_REV02
     public static int32 registerStaticListCount = 0;
-    public static ObjectRegistration[Const.OBJECT_COUNT] registerStaticList;
+    public static ObjectRegistration[OBJECT_COUNT] registerStaticList;
 #endif
 
     // Don't directly call these functions, use the attributes instead
@@ -432,7 +432,7 @@ public enum TileCollisionModes : uint8
         function void(void* data) create, function void() stageLoad, function void() editorLoad, function void() editorDraw,
         function void() serialize, function void(void* staticVars) staticLoad)
     {
-        if (registerObjectListCount < Const.OBJECT_COUNT)
+        if (registerObjectListCount < OBJECT_COUNT)
         {
             var object = &registerObjectList[registerObjectListCount++];
             System.Internal.MemSet(object, 0, sizeof(ObjectRegistration));
@@ -463,7 +463,7 @@ public enum TileCollisionModes : uint8
 #if RETRO_REV02
     private static staticVars* RegisterStaticVars<staticVars>(ref staticVars* sVars, char8* name)
     {
-        if (registerStaticListCount < Const.OBJECT_COUNT)
+        if (registerStaticListCount < OBJECT_COUNT)
         {
             var object = &registerStaticList[registerStaticListCount++];
             System.Internal.MemSet(object, 0, sizeof(ObjectRegistration));
@@ -483,7 +483,7 @@ public enum TileCollisionModes : uint8
         function void(void* data) create, function void() stageLoad, function void() editorLoad, function void() editorDraw,
         function void() serialize, function void(void* staticVars) staticLoad, char8* inherit)
     {
-        if (registerObjectListCount < Const.OBJECT_COUNT)
+        if (registerObjectListCount < OBJECT_COUNT)
         {
             var object = &registerObjectList[registerObjectListCount++];
             System.Internal.MemSet(object, 0, sizeof(ObjectRegistration));

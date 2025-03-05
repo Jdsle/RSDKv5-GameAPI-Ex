@@ -115,7 +115,7 @@ public struct Palette
 
 static
 {
-    public static Palette[Const.PALETTE_BANK_COUNT] paletteBank = .(.(0), .(1), .(2), .(3), .(4), .(5), .(6), .(7));;
+    public static Palette[PALETTE_BANK_COUNT] paletteBank = .(.(0), .(1), .(2), .(3), .(4), .(5), .(6), .(7));;
 }
 
 public static class Graphics

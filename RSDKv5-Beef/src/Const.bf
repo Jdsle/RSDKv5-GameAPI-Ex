@@ -1,6 +1,6 @@
 namespace RSDK;
 
-public class Const
+static
 {
     // RSDKv5/EngineAPI.bf
     public const int SCREEN_XMAX = 1280;

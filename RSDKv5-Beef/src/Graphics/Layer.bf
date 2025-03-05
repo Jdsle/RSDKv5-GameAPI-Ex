@@ -60,7 +60,7 @@ public struct Tile
 [System.CRepr] public struct TileLayer
 {
     public uint8 type;
-    public uint8[Const.CAMERA_COUNT] drawGroup;
+    public uint8[CAMERA_COUNT] drawGroup;
     public uint8 widthShift;
     public uint8 heightShift;
     public uint16 width;

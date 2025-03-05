@@ -727,7 +727,7 @@ public enum StatusCodes
 
 [System.CRepr] public struct ScreenInfo
 {
-    public uint16[Const.SCREEN_XMAX * Const.SCREEN_YSIZE] frameBuffer;
+    public uint16[SCREEN_XMAX * SCREEN_YSIZE] frameBuffer;
     public Vector2 position;
     public Vector2 size;
     public Vector2 center;

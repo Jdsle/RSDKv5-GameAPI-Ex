@@ -64,10 +64,10 @@ public enum CollisionSides : uint8 { C_NONE, C_TOP, C_LEFT, C_RIGHT, C_BOTTOM }
 
 [System.CRepr] public struct CollisionMask
 {
-    public uint8[Const.TILE_SIZE] floorMasks;
-    public uint8[Const.TILE_SIZE] lWallMasks;
-    public uint8[Const.TILE_SIZE] rWallMasks;
-    public uint8[Const.TILE_SIZE] roofMasks;
+    public uint8[TILE_SIZE] floorMasks;
+    public uint8[TILE_SIZE] lWallMasks;
+    public uint8[TILE_SIZE] rWallMasks;
+    public uint8[TILE_SIZE] roofMasks;
 }
 
 [System.CRepr] public struct TileInfo
