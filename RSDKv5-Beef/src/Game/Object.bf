@@ -81,8 +81,8 @@ public enum TileCollisionModes : uint8
         public uint16 classID;
         public uint8 active;
 
-        public void EditableVar(VariableTypes type, char8* name, uint32 offset) => RSDKTable.SetEditableVar((.)type, name, (.)classID, (.)offset);
-        public int32 Count(bool32 isActive = false)                             => RSDKTable.GetEntityCount(classID, isActive);
+        public void EditableVar(VariableTypes type, char8* name, int32 offset) => RSDKTable.SetEditableVar((.)type, name, (.)classID, offset);
+        public int32 Count(bool32 isActive = false)                            => RSDKTable.GetEntityCount(classID, isActive);
 
 #if RETRO_USE_MOD_LOADER
         public void Super(int32 callback, void *data = null) => modTable.Super(classID, callback, data);
@@ -275,18 +275,18 @@ public enum TileCollisionModes : uint8
         T* entity = null; defer delete entity;
         switch (type)
         {
-        case .ALL_ENTITIES:
-            while (RSDKTable.GetAllEntities(group, (void**)&entity)) list.AddLast(entity);
-            break;
-        case .ACTIVE_ENTITIES:
-            while (RSDKTable.GetActiveEntities(group, (void**)&entity)) list.AddLast(entity);
-            break;
+            case .ALL_ENTITIES:
+                while (RSDKTable.GetAllEntities(group, (void**)&entity)) list.AddLast(entity);
+                break;
+            case .ACTIVE_ENTITIES:
+                while (RSDKTable.GetActiveEntities(group, (void**)&entity)) list.AddLast(entity);
+                break;
 #if RETRO_USE_MOD_LOADER && RETRO_MOD_LOADER_VER_2
             case .GROUP_ENTITIES:
                 while (modTable.GetGroupEntities(group, (void**)&entity)) list.AddLast(entity);
                 break;
 #endif
-        default: break;
+            default: break;
         }
 
         return list;
@@ -300,18 +300,18 @@ public enum TileCollisionModes : uint8
         T* entity = null; defer delete entity;
         switch (type)
         {
-        case .ALL_ENTITIES:
-            while (RSDKTable.GetAllEntities(group, (void**)&entity)) list.AddLast(entity);
-            break;
-        case .ACTIVE_ENTITIES:
-            while (RSDKTable.GetActiveEntities(group, (void**)&entity)) list.AddLast(entity);
-            break;
+            case .ALL_ENTITIES:
+                while (RSDKTable.GetAllEntities(group, (void**)&entity)) list.AddLast(entity);
+                break;
+            case .ACTIVE_ENTITIES:
+                while (RSDKTable.GetActiveEntities(group, (void**)&entity)) list.AddLast(entity);
+                break;
 #if RETRO_USE_MOD_LOADER && RETRO_MOD_LOADER_VER_2
             case .GROUP_ENTITIES:
                 while (modTable.GetGroupEntities(group, (void**)&entity)) list.AddLast(entity);
                 break;
 #endif
-        default: break;
+            default: break;
         }
 
         return list;
@@ -326,18 +326,18 @@ public enum TileCollisionModes : uint8
 
         switch (type)
         {
-        case .ALL_ENTITIES:
-            while (RSDKTable.GetAllEntities(.(ForeachGroups.GROUP_ALL), (void**)&entity)) list.AddLast(entity);
-            break;
-        case .ACTIVE_ENTITIES:
-            while (RSDKTable.GetActiveEntities(.(ForeachGroups.GROUP_ALL), (void**)&entity)) list.AddLast(entity);
-            break;
+            case .ALL_ENTITIES:
+                while (RSDKTable.GetAllEntities(.(ForeachGroups.GROUP_ALL), (void**)&entity)) list.AddLast(entity);
+                break;
+            case .ACTIVE_ENTITIES:
+                while (RSDKTable.GetActiveEntities(.(ForeachGroups.GROUP_ALL), (void**)&entity)) list.AddLast(entity);
+                break;
 #if RETRO_USE_MOD_LOADER && RETRO_MOD_LOADER_VER_2
             case .GROUP_ENTITIES:
                 while (modTable.GetGroupEntities(.(ForeachGroups.GROUP_ALL), (void**)&entity)) list.AddLast(entity);
                 break;
 #endif
-        default: break;
+            default: break;
         }
 
         return list;
@@ -352,18 +352,18 @@ public enum TileCollisionModes : uint8
 
         switch (type)
         {
-        case .ALL_ENTITIES:
-            while (RSDKTable.GetAllEntities(group, (void**)&entity)) list.AddLast(entity);
-            break;
-        case .ACTIVE_ENTITIES:
-            while (RSDKTable.GetActiveEntities(group, (void**)&entity)) list.AddLast(entity);
-            break;
+            case .ALL_ENTITIES:
+                while (RSDKTable.GetAllEntities(group, (void**)&entity)) list.AddLast(entity);
+                break;
+            case .ACTIVE_ENTITIES:
+                while (RSDKTable.GetActiveEntities(group, (void**)&entity)) list.AddLast(entity);
+                break;
 #if RETRO_USE_MOD_LOADER && RETRO_MOD_LOADER_VER_2
             case .GROUP_ENTITIES:
                 while (modTable.GetGroupEntities(group, (void**)&entity)) list.AddLast(entity);
                 break;
 #endif
-        default: break;
+            default: break;
         }
 
         return list;

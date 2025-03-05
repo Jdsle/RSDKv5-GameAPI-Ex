@@ -2,6 +2,15 @@ using System;
 
 namespace RSDK;
 
+[AttributeUsage(.Field, .ReflectAttribute, ReflectUser = .All)]
+public struct EditableAttribute : Attribute, IOnTypeInit
+{
+    [Comptime]
+    public void OnTypeInit(Type entityType, Self* prev)
+    {
+    }
+}
+
 [AttributeUsage(.Struct, .ReflectAttribute, ReflectUser = .All)]
 public struct RegisterObjectAttribute : Attribute, IOnTypeInit
 {
@@ -29,7 +38,7 @@ public struct RegisterObjectAttribute : Attribute, IOnTypeInit
         events.Append("null");
         events.Append("null");
 #endif
-        events.Append("() => Self.Serialize(),");
+        events.Append("() => { Serialize.Internal<Self>();Self.Serialize(); },");
 #if RETRO_REV0U
         events.Append("(sVars) => Self.StaticLoad((.)sVars)");
 #else
@@ -91,7 +100,7 @@ public struct ModRegisterObjectAttribute : Attribute, IOnTypeInit
         events.Append("null");
         events.Append("null");
 #endif
-        events.Append("() => Self.Serialize(),");
+        events.Append("() => { Serialize.Internal<Self>();Self.Serialize(); },");
 #if RETRO_REV0U
         events.Append("(sVars) => Self.StaticLoad((.)sVars)");
 #else
