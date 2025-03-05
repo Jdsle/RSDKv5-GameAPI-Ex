@@ -16,30 +16,30 @@ static
 
 public enum ModCallbackEvents : int32
 {
-    MODCB_ONGAMESTARTUP,
-    MODCB_ONSTATICLOAD,
-    MODCB_ONSTAGELOAD,
-    MODCB_ONUPDATE,
-    MODCB_ONLATEUPDATE,
-    MODCB_ONSTATICUPDATE,
-    MODCB_ONDRAW,
-    MODCB_ONSTAGEUNLOAD,
-    MODCB_ONSHADERLOAD,
-    MODCB_ONVIDEOSKIPCB,
-    MODCB_ONSCANLINECB,
+    ONGAMESTARTUP,
+    ONSTATICLOAD,
+    ONSTAGELOAD,
+    ONUPDATE,
+    ONLATEUPDATE,
+    ONSTATICUPDATE,
+    ONDRAW,
+    ONSTAGEUNLOAD,
+    ONSHADERLOAD,
+    ONVIDEOSKIPCB,
+    ONSCANLINECB,
 }
 
-public enum ModSuper
+public enum ModSuper : int32
 {
-    SUPER_UPDATE,
-    SUPER_LATEUPDATE,
-    SUPER_STATICUPDATE,
-    SUPER_DRAW,
-    SUPER_CREATE,
-    SUPER_STAGELOAD,
-    SUPER_EDITORLOAD,
-    SUPER_EDITORDRAW,
-    SUPER_SERIALIZE
+    UPDATE,
+    LATEUPDATE,
+    STATICUPDATE,
+    DRAW,
+    CREATE,
+    STAGELOAD,
+    EDITORLOAD,
+    EDITORDRAW,
+    SERIALIZE
 }
 
 static
@@ -48,7 +48,7 @@ static
     // Mod Callbacks & Public Functions
     // --------------------------------
 
-    public static void AddModCallback(int32 callbackID, function void(void*) callback) => modTable.AddModCallback(callbackID, callback);
+    public static void AddModCallback(ModCallbackEvents callbackID, function void(void*) callback) => modTable.AddModCallback((.)callbackID, callback);
     public static void AddPublicFunction(char8* functionName, void* functionPtr) => modTable.AddPublicFunction(functionName, functionPtr);
     public static void* GetPublicFunction(char8* id, char8* functionName) => modTable.GetPublicFunction(id, functionName);
 
