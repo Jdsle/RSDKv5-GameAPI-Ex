@@ -27,7 +27,7 @@ static
         return true;
     }
 
-    public bool32 SetAndRun(function void(T this) statePtr, T self, Priority priorityType = .NORMAL) mut
+    public bool32 SetAndRun(function void(T this) statePtr, T* self, Priority priorityType = .NORMAL) mut
     {
         bool32 applied = Set(statePtr, priorityType);
         if (applied)
@@ -47,7 +47,7 @@ static
         return true;
     }
 
-    public void Run(T entity) mut
+    public void Run(T* entity) mut
     {
         if (timer != 0)
             timer--;
@@ -71,30 +71,4 @@ static
     public int32 timer;
     private uint8[3] unknown;
     public Priority priority;
-}
-
-// C API StateMachine
-[System.CRepr] public struct StateMachineC<T>
-{
-    public bool32 Set(function void(T this) statePtr) mut
-    {
-        ptr = statePtr;
-
-        return true;
-    }
-
-    public void Run(T entity) mut
-    {
-#if RETRO_USE_MOD_LOADER
-        // Nasty void(T this) -> void() conversion
-        modTable.StateMachineRun(*(function void()*)&ptr);
-#else
-        ptr(entity);
-#endif
-    }
-
-    // TODO?
-    public bool32 Matches(function void(T this) other) { return ptr == other; }
-
-    private function void(T this) ptr;
 }
