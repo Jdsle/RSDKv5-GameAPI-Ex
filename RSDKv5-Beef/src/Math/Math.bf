@@ -42,7 +42,7 @@ static
     public static T FROM_FIXED<T>(T x) where T : var, IInteger => (x) >> 16;
 }
 
-public static class Math
+public static class Math : System.Math
 {
     public static int32 Sin1024(int32 angle)  => RSDKTable.Sin1024(angle);
     public static int32 Cos1024(int32 angle)  => RSDKTable.Cos1024(angle);
