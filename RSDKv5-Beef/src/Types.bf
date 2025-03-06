@@ -25,6 +25,7 @@ namespace RSDK;
     public static bool operator ==(Self lhs, Self rhs) => lhs.val == rhs.val;
     public static bool operator !=(Self lhs, Self rhs) => lhs.val != rhs.val;
 
+    public void operator |=(Self v) mut => val |= v;
     public void operator ^=(uint32 v) mut => val ^= v;
 }
 
@@ -52,6 +53,7 @@ namespace RSDK;
     public static bool operator ==(Self lhs, Self rhs) => lhs.val == rhs.val;
     public static bool operator !=(Self lhs, Self rhs) => lhs.val != rhs.val;
 
+    public void operator |=(Self v) mut => val |= v;
     public void operator ^=(uint32 v) mut => val ^= v;
 }
 
