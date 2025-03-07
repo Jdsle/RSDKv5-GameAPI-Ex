@@ -37,9 +37,6 @@ static
     public static uint32 FROM_FIXED(uint32 x) => (x) >> 16;
     public static float FROM_FIXED_F(int x)   => (x / 65536.0f);
     public static float FROM_FIXED_F(float x) => x / 65536.0f;
-
-    public static T TO_FIXED<T>(T x) where T : var, IInteger   => (x) << 16;
-    public static T FROM_FIXED<T>(T x) where T : var, IInteger => (x) >> 16;
 }
 
 public static class Math : System.Math
