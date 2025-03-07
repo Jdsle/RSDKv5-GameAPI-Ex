@@ -24,11 +24,13 @@ static
 
     public static ScreenInfo* screenInfo;
 
+#if RETRO_REV0U
     public static void NotifyCallback(int32 callbackID, int32 param1, int32 param2, int32 param3)
     {
         if (RSDKTable.NotifyCallback != null)
             RSDKTable.NotifyCallback(callbackID, param1, param2, param3);
     }
+#endif
 }
 
 public enum Scopes : uint8
