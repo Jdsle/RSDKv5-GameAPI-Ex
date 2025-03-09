@@ -457,37 +457,33 @@ public enum TileCollisionModes : uint8
             System.Internal.MemSet(object, 0, sizeof(ObjectRegistration));
             object.name = name;
 
-            if (!Attributes.IsDefault<entity>("Update"))
-                object.update = update;
+            // looks weird and pointless at first, but the point of this is really for method.HasCustomAttribute
+            // using it with GetMethod would fail for who knows what reason, but GetMethods is fine lol
 
-            if (!Attributes.IsDefault<entity>("LateUpdate"))
-                object.lateUpdate = lateUpdate;
+            for (let method in typeof(entity).GetMethods())
+            {
+                if (method.HasCustomAttribute<DefaultEventAttribute>())
+                    continue;
 
-            if (!Attributes.IsDefault<entity>("StaticUpdate"))
-                object.staticUpdate = staticUpdate;
-
-            if (!Attributes.IsDefault<entity>("Draw"))
-                object.draw = draw;
-
-            if (!Attributes.IsDefault<entity>("Create"))
-                object.create = create;
-
-            if (!Attributes.IsDefault<entity>("StageLoad"))
-                object.stageLoad = stageLoad;
-
+                switch (method.Name)
+                {
+                    case "Update": object.update = update; break;
+                    case "LateUpdate": object.lateUpdate = lateUpdate; break;
+                    case "StaticUpdate": object.staticUpdate = staticUpdate; break;
+                    case "Draw": object.draw = draw; break;
+                    case "Create": object.create = create; break;
+                    case "StageLoad": object.stageLoad = stageLoad; break;
 #if GAME_INCLUDE_EDITOR
-            if (!Attributes.IsDefault<entity>("EditorLoad"))
-                object.editorLoad = editorLoad;
-
-            if (!Attributes.IsDefault<entity>("EditorDraw"))
-                object.editorDraw = editorDraw;
+                    case "EditorLoad": object.editorLoad = editorLoad; break;
+                    case "EditorDraw": object.editorDraw = editorDraw; break;
 #endif
-            if (!Attributes.IsDefault<entity>("Serialize"))
-                object.serialize = serialize;
+                    case "Serialize": object.serialize = serialize; break;
 #if RETRO_REV0U
-            if (!Attributes.IsDefault<entity>("StaticLoad"))
-                object.staticLoad = staticLoad;
+                    case "StaticLoad": object.staticLoad = staticLoad; break;
 #endif
+                }
+            }
+
             object.staticVars      = (.)&sVars;
             object.entityClassSize = (.)sizeof(entity);
             object.staticClassSize = (.)sizeof(staticVars);
@@ -526,37 +522,30 @@ public enum TileCollisionModes : uint8
             System.Internal.MemSet(object, 0, sizeof(ObjectRegistration));
             object.name = name;
 
-            if (!Attributes.IsDefault<entity>("Update"))
-                object.update = update;
+            for (let method in typeof(entity).GetMethods())
+            {
+                if (method.HasCustomAttribute<DefaultEventAttribute>())
+                    continue;
 
-            if (!Attributes.IsDefault<entity>("LateUpdate"))
-                object.lateUpdate = lateUpdate;
-
-            if (!Attributes.IsDefault<entity>("StaticUpdate"))
-                object.staticUpdate = staticUpdate;
-
-            if (!Attributes.IsDefault<entity>("Draw"))
-                object.draw = draw;
-
-            if (!Attributes.IsDefault<entity>("Create"))
-                object.create = create;
-
-            if (!Attributes.IsDefault<entity>("StageLoad"))
-                object.stageLoad = stageLoad;
-
+                switch (method.Name)
+                {
+                    case "Update": object.update = update; break;
+                    case "LateUpdate": object.lateUpdate = lateUpdate; break;
+                    case "StaticUpdate": object.staticUpdate = staticUpdate; break;
+                    case "Draw": object.draw = draw; break;
+                    case "Create": object.create = create; break;
+                    case "StageLoad": object.stageLoad = stageLoad; break;
 #if GAME_INCLUDE_EDITOR
-            if (!Attributes.IsDefault<entity>("EditorLoad"))
-                object.editorLoad = editorLoad;
-
-            if (!Attributes.IsDefault<entity>("EditorDraw"))
-                object.editorDraw = editorDraw;
+                    case "EditorLoad": object.editorLoad = editorLoad; break;
+                    case "EditorDraw": object.editorDraw = editorDraw; break;
 #endif
-            if (!Attributes.IsDefault<entity>("Serialize"))
-                object.serialize = serialize;
+                    case "Serialize": object.serialize = serialize; break;
 #if RETRO_REV0U
-            if (!Attributes.IsDefault<entity>("StaticLoad"))
-                object.staticLoad = staticLoad;
+                    case "StaticLoad": object.staticLoad = staticLoad; break;
 #endif
+                }
+            }
+
             object.staticVars         = (.)&sVars;
             object.modStaticVars      = (.)&modsVars;
             object.entityClassSize    = (.)sizeof(entity);

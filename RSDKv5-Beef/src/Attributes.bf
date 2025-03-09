@@ -2,11 +2,6 @@ using System;
 
 namespace RSDK;
 
-public static class Attributes
-{
-    public static bool32 IsDefault<T>(StringView name) => typeof(T).GetMethod(name).Get().HasCustomAttribute<DefaultEventAttribute>();
-}
-
 [AttributeUsage(.Field, .ReflectAttribute, ReflectUser = .All)]
 public struct EditableAttribute : Attribute, IOnTypeInit
 {
