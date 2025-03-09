@@ -157,7 +157,7 @@ public enum TileCollisionModes : uint8
         [DefaultEvent] private void EditorDraw() { }
 #endif
 #if RETRO_REV0U
-        private static void StaticLoad(Static* sVars)
+        [DefaultEvent] private static void StaticLoad(Static* sVars)
         {
             sVars.classID = (.)DefaultObjects.TYPE_DEFAULTOBJECT;
             sVars.active = (.)ActiveFlags.ACTIVE_NEVER;
