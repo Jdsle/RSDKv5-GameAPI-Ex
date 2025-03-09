@@ -146,6 +146,25 @@ public enum TileCollisionModes : uint8
         public Boolean<uint8> visible;
         public Boolean<uint8> onScreen;
 
+        [DefaultEvent] private void Update() { }
+        [DefaultEvent] private void LateUpdate() { }
+        [DefaultEvent] private static void StaticUpdate() { }
+        [DefaultEvent] private void Draw() { }
+        [DefaultEvent] private void Create(void* data) { }
+        [DefaultEvent] private static void StageLoad() { }
+#if GAME_INCLUDE_EDITOR
+        [DefaultEvent] private static void EditorLoad() { }
+        [DefaultEvent] private void EditorDraw() { }
+#endif
+#if RETRO_REV0U
+        private static void StaticLoad(Static* sVars)
+        {
+            sVars.classID = (.)DefaultObjects.TYPE_DEFAULTOBJECT;
+            sVars.active = (.)ActiveFlags.ACTIVE_NEVER;
+        }
+#endif
+        private static void Serialize() { }
+
         public void Init() mut
         {
             active        = .ACTIVE_BOUNDS;
@@ -437,19 +456,37 @@ public enum TileCollisionModes : uint8
             var object = &registerObjectList[registerObjectListCount++];
             System.Internal.MemSet(object, 0, sizeof(ObjectRegistration));
             object.name = name;
-            object.update = update;
-            object.lateUpdate = lateUpdate;
-            object.staticUpdate = staticUpdate;
-            object.draw = draw;
-            object.create = create;
-            object.stageLoad = stageLoad;
+
+            if (!Attributes.IsDefault<entity>("Update"))
+                object.update = update;
+
+            if (!Attributes.IsDefault<entity>("LateUpdate"))
+                object.lateUpdate = lateUpdate;
+
+            if (!Attributes.IsDefault<entity>("StaticUpdate"))
+                object.staticUpdate = staticUpdate;
+
+            if (!Attributes.IsDefault<entity>("Draw"))
+                object.draw = draw;
+
+            if (!Attributes.IsDefault<entity>("Create"))
+                object.create = create;
+
+            if (!Attributes.IsDefault<entity>("StageLoad"))
+                object.stageLoad = stageLoad;
+
 #if GAME_INCLUDE_EDITOR
-            object.editorLoad = editorLoad;
-            object.editorDraw = editorDraw;
+            if (!Attributes.IsDefault<entity>("EditorLoad"))
+                object.editorLoad = editorLoad;
+
+            if (!Attributes.IsDefault<entity>("EditorDraw"))
+                object.editorDraw = editorDraw;
 #endif
-            object.serialize = serialize;
+            if (!Attributes.IsDefault<entity>("Serialize"))
+                object.serialize = serialize;
 #if RETRO_REV0U
-            object.staticLoad = staticLoad;
+            if (!Attributes.IsDefault<entity>("StaticLoad"))
+                object.staticLoad = staticLoad;
 #endif
             object.staticVars      = (.)&sVars;
             object.entityClassSize = (.)sizeof(entity);
@@ -488,19 +525,37 @@ public enum TileCollisionModes : uint8
             var object = &registerObjectList[registerObjectListCount++];
             System.Internal.MemSet(object, 0, sizeof(ObjectRegistration));
             object.name = name;
-            object.update = update;
-            object.lateUpdate = lateUpdate;
-            object.staticUpdate = staticUpdate;
-            object.draw = draw;
-            object.create = create;
-            object.stageLoad = stageLoad;
+
+            if (!Attributes.IsDefault<entity>("Update"))
+                object.update = update;
+
+            if (!Attributes.IsDefault<entity>("LateUpdate"))
+                object.lateUpdate = lateUpdate;
+
+            if (!Attributes.IsDefault<entity>("StaticUpdate"))
+                object.staticUpdate = staticUpdate;
+
+            if (!Attributes.IsDefault<entity>("Draw"))
+                object.draw = draw;
+
+            if (!Attributes.IsDefault<entity>("Create"))
+                object.create = create;
+
+            if (!Attributes.IsDefault<entity>("StageLoad"))
+                object.stageLoad = stageLoad;
+
 #if GAME_INCLUDE_EDITOR
-            object.editorLoad = editorLoad;
-            object.editorDraw = editorDraw;
+            if (!Attributes.IsDefault<entity>("EditorLoad"))
+                object.editorLoad = editorLoad;
+
+            if (!Attributes.IsDefault<entity>("EditorDraw"))
+                object.editorDraw = editorDraw;
 #endif
-            object.serialize = serialize;
+            if (!Attributes.IsDefault<entity>("Serialize"))
+                object.serialize = serialize;
 #if RETRO_REV0U
-            object.staticLoad = staticLoad;
+            if (!Attributes.IsDefault<entity>("StaticLoad"))
+                object.staticLoad = staticLoad;
 #endif
             object.staticVars         = (.)&sVars;
             object.modStaticVars      = (.)&modsVars;

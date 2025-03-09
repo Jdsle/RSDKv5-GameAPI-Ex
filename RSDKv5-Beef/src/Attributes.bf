@@ -2,8 +2,22 @@ using System;
 
 namespace RSDK;
 
+public static class Attributes
+{
+    public static bool32 IsDefault<T>(StringView name) => typeof(T).GetMethod(name).Get().HasCustomAttribute<DefaultEventAttribute>();
+}
+
 [AttributeUsage(.Field, .ReflectAttribute, ReflectUser = .All)]
 public struct EditableAttribute : Attribute, IOnTypeInit
+{
+    [Comptime]
+    public void OnTypeInit(Type entityType, Self* prev)
+    {
+    }
+}
+
+[AttributeUsage(.Method, .ReflectAttribute, ReflectUser = .All)]
+public struct DefaultEventAttribute : Attribute, IOnTypeInit
 {
     [Comptime]
     public void OnTypeInit(Type entityType, Self* prev)
@@ -25,22 +39,22 @@ public struct RegisterObjectAttribute : Attribute, IOnTypeInit
         System.String name = entityType.GetName(.. scope .());
         System.String events = scope .();
 
-        events.Append("() => ((Self*)sceneInfo.entity).Update(),");
-        events.Append("() => ((Self*)sceneInfo.entity).LateUpdate(),");
-        events.Append("() => Self.StaticUpdate(),");
-        events.Append("() => ((Self*)sceneInfo.entity).Draw(),");
-        events.Append("(data) => ((Self*)sceneInfo.entity).Create(data),");
-        events.Append("() => Self.StageLoad(),");
+        events.Append("() => [System.Friend]((Self*)sceneInfo.entity).Update(),");
+        events.Append("() => [System.Friend]((Self*)sceneInfo.entity).LateUpdate(),");
+        events.Append("() => [System.Friend]Self.StaticUpdate(),");
+        events.Append("() => [System.Friend]((Self*)sceneInfo.entity).Draw(),");
+        events.Append("(data) => [System.Friend]((Self*)sceneInfo.entity).Create(data),");
+        events.Append("() => [System.Friend]Self.StageLoad(),");
 #if GAME_INCLUDE_EDITOR
-        events.Append("() => Self.EditorLoad(),");
-        events.Append("() => ((Self*)sceneInfo.entity).EditorDraw(),");
+        events.Append("() => [System.Friend]Self.EditorLoad(),");
+        events.Append("() => [System.Friend]((Self*)sceneInfo.entity).EditorDraw(),");
 #else
         events.Append("null");
         events.Append("null");
 #endif
-        events.Append("() => { Serialize.Internal<Self>();Self.Serialize(); },");
+        events.Append("() => { Serialize.Internal<Self>(); [System.Friend]Self.Serialize(); },");
 #if RETRO_REV0U
-        events.Append("(sVars) => { GameObject.InitStatic(sVars);Self.StaticLoad((.)sVars); }");
+        events.Append("(sVars) => { GameObject.InitStatic(sVars); [System.Friend]Self.StaticLoad((.)sVars); }");
 #else
         events.Append("null");
 #endif
@@ -87,22 +101,22 @@ public struct ModRegisterObjectAttribute : Attribute, IOnTypeInit
         System.String name = entityType.GetName(.. scope .());
         System.String events = scope .();
 
-        events.Append("() => ((Self*)sceneInfo.entity).Update(),");
-        events.Append("() => ((Self*)sceneInfo.entity).LateUpdate(),");
-        events.Append("() => Self.StaticUpdate(),");
-        events.Append("() => ((Self*)sceneInfo.entity).Draw(),");
-        events.Append("(data) => ((Self*)sceneInfo.entity).Create(data),");
-        events.Append("() => Self.StageLoad(),");
+        events.Append("() => [System.Friend]((Self*)sceneInfo.entity).Update(),");
+        events.Append("() => [System.Friend]((Self*)sceneInfo.entity).LateUpdate(),");
+        events.Append("() => [System.Friend]Self.StaticUpdate(),");
+        events.Append("() => [System.Friend]((Self*)sceneInfo.entity).Draw(),");
+        events.Append("(data) => [System.Friend]((Self*)sceneInfo.entity).Create(data),");
+        events.Append("() => [System.Friend]Self.StageLoad(),");
 #if GAME_INCLUDE_EDITOR
-        events.Append("() => Self.EditorLoad(),");
-        events.Append("() => ((Self*)sceneInfo.entity).EditorDraw(),");
+        events.Append("() => [System.Friend]Self.EditorLoad(),");
+        events.Append("() => [System.Friend]((Self*)sceneInfo.entity).EditorDraw(),");
 #else
         events.Append("null");
         events.Append("null");
 #endif
-        events.Append("() => { Serialize.Internal<Self>();Self.Serialize(); },");
+        events.Append("() => { [System.Friend]Serialize.Internal<Self>(); [System.Friend]Self.Serialize(); },");
 #if RETRO_REV0U
-        events.Append("(sVars) => { GameObject.InitStatic(sVars);Self.StaticLoad((.)sVars); }");
+        events.Append("(sVars) => { GameObject.InitStatic(sVars); [System.Friend]Self.StaticLoad((.)sVars); }");
 #else
         events.Append("null");
 #endif
