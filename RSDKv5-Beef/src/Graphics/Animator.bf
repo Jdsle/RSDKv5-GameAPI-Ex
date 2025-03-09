@@ -59,9 +59,9 @@ public struct Animator
     public SpriteFrame* GetFrame(SpriteAnimation aniFrames) => aniFrames.GetFrame((.)animationID, frameID);
 
     public void DrawSprite(Vector2* position, bool32 screenRelative) mut => RSDKTable.DrawSprite(&this, position, screenRelative);
-    public void DrawString(Vector2* position, String* string, int32 endFrame, int32 textLength, int32 align, int32 spacing, Vector2* charOffsets, bool32 screenRelative) mut
+    public void DrawString(Vector2* position, String* string, int32 endFrame, int32 textLength, Alignments align, int32 spacing, Vector2* charOffsets, bool32 screenRelative) mut
     {
-        RSDKTable.DrawText(&this, position, string, endFrame, textLength, align, spacing, null, charOffsets, screenRelative);
+        RSDKTable.DrawText(&this, position, string, endFrame, textLength, (.)align, spacing, null, charOffsets, screenRelative);
     }
 
 #if RETRO_REV0U
