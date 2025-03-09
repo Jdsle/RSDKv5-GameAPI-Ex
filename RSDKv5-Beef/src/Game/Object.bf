@@ -85,7 +85,7 @@ public enum TileCollisionModes : uint8
         public int32 Count(bool32 isActive = false)                            => RSDKTable.GetEntityCount(classID, isActive);
 
 #if RETRO_USE_MOD_LOADER
-        public void Super(RSDK.Mod.ModSuper callback, void *data = null) => modTable.Super(classID, (.)callback, data);
+        public void Super(ModSuper callback, void *data = null) => modTable.Super(classID, (.)callback, data);
 #endif
     }
 
