@@ -84,47 +84,56 @@ namespace RSDK;
 
     public static Self operator +(ref Self lhs, ref Self rhs)
     {
-        lhs += rhs;
+        lhs.x += rhs.x;
+        lhs.y += rhs.y;
         return lhs;
     }
     public static Self operator -(ref Self lhs, ref Self rhs)
     {
-        lhs -= rhs;
+        lhs.x -= rhs.x;
+        lhs.y -= rhs.y;
         return lhs;
     }
     public static Self operator *(ref Self lhs, ref Self rhs)
     {
-        lhs *= rhs;
+        lhs.x *= rhs.x;
+        lhs.y *= rhs.y;
         return lhs;
     }
     public static Self operator /(ref Self lhs, ref Self rhs)
     {
-        lhs /= rhs;
+        lhs.x /= rhs.x;
+        lhs.y /= rhs.y;
         return lhs;
     }
     public static Self operator &(ref Self lhs, ref Self rhs)
     {
-        lhs &= rhs;
+        lhs.x &= rhs.x;
+        lhs.y &= rhs.y;
         return lhs;
     }
     public static Self operator %(ref Self lhs, ref Self rhs)
     {
-        lhs %= rhs;
+        lhs.x %= rhs.x;
+        lhs.y %= rhs.y;
         return lhs;
     }
     public static Self operator ^(ref Self lhs, ref Self rhs)
     {
-        lhs ^= rhs;
+        lhs.x ^= rhs.x;
+        lhs.y ^= rhs.y;
         return lhs;
     }
     public static Self operator <<(ref Self lhs, ref Self rhs)
     {
-        lhs <<= rhs;
+        lhs.x <<= rhs.x;
+        lhs.y <<= rhs.y;
         return lhs;
     }
     public static Self operator >>(ref Self lhs, ref Self rhs)
     {
-        lhs >>= rhs;
+        lhs.x >>= rhs.x;
+        lhs.y >>= rhs.y;
         return lhs;
     }
 }
