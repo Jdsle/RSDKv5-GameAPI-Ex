@@ -42,6 +42,22 @@ namespace RSDK;
 
     public bool32 CheckOnScreen(Self* range) mut => RSDKTable.CheckPosOnScreen(&this, range);
 
+    public Self ToFixed() mut
+    {
+        Self v = this;
+        v.x <<= 16;
+        v.y <<= 16;
+        return v;
+    }
+
+    public Self FromFixed() mut
+    {
+        Self v = this;
+        x >>= 16;
+        y >>= 16;
+        return v;
+    }
+
     // ---------
     // Operators
     // ---------
@@ -84,56 +100,65 @@ namespace RSDK;
 
     public static Self operator +(ref Self lhs, ref Self rhs)
     {
-        lhs.x += rhs.x;
-        lhs.y += rhs.y;
-        return lhs;
+        Self val = lhs;
+        val.x += rhs.x;
+        val.y += rhs.y;
+        return val;
     }
     public static Self operator -(ref Self lhs, ref Self rhs)
     {
-        lhs.x -= rhs.x;
-        lhs.y -= rhs.y;
-        return lhs;
+        Self val = lhs;
+        val.x -= rhs.x;
+        val.y -= rhs.y;
+        return val;
     }
     public static Self operator *(ref Self lhs, ref Self rhs)
     {
-        lhs.x *= rhs.x;
-        lhs.y *= rhs.y;
-        return lhs;
+        Self val = lhs;
+        val.x *= rhs.x;
+        val.y *= rhs.y;
+        return val;
     }
     public static Self operator /(ref Self lhs, ref Self rhs)
     {
-        lhs.x /= rhs.x;
-        lhs.y /= rhs.y;
-        return lhs;
+        Self val = lhs;
+        val.x /= rhs.x;
+        val.y /= rhs.y;
+        return val;
     }
     public static Self operator &(ref Self lhs, ref Self rhs)
     {
-        lhs.x &= rhs.x;
-        lhs.y &= rhs.y;
-        return lhs;
+        Self val = lhs;
+        val.x &= rhs.x;
+        val.y &= rhs.y;
+        return val;
     }
     public static Self operator %(ref Self lhs, ref Self rhs)
     {
-        lhs.x %= rhs.x;
-        lhs.y %= rhs.y;
-        return lhs;
+        Self val = lhs;
+        val.x %= rhs.x;
+        val.y %= rhs.y;
+        return val;
     }
     public static Self operator ^(ref Self lhs, ref Self rhs)
     {
-        lhs.x ^= rhs.x;
-        lhs.y ^= rhs.y;
-        return lhs;
+        Self val = lhs;
+        val.x ^= rhs.x;
+        val.y ^= rhs.y;
+        return val;
     }
     public static Self operator <<(ref Self lhs, ref Self rhs)
     {
-        lhs.x <<= rhs.x;
-        lhs.y <<= rhs.y;
-        return lhs;
+        Self val = lhs;
+        val.x <<= rhs.x;
+        val.y <<= rhs.y;
+        return val;
     }
     public static Self operator >>(ref Self lhs, ref Self rhs)
     {
-        lhs.x >>= rhs.x;
-        lhs.y >>= rhs.y;
-        return lhs;
+        Self val = lhs;
+        val.x >>= rhs.x;
+        val.y >>= rhs.y;
+        return val;
     }
 }
