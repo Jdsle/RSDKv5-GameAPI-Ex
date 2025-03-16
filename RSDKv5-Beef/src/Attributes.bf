@@ -55,7 +55,9 @@ public struct RegisterObjectAttribute : Attribute, IOnTypeInit
 #endif
 
         Compiler.EmitTypeBody(entityType, scope $"""
+                                #pragma warning disable
                                 [System.Reflect]\npublic static Static* sVars = GameObject.[System.Friend]RegisterObject<Self, Static>(ref sVars, "{name}", {events});
+                                #pragma warning restore
                                 """);
     }
 }
@@ -118,8 +120,10 @@ public struct ModRegisterObjectAttribute : Attribute, IOnTypeInit
 
 
         Compiler.EmitTypeBody(entityType, scope $"""
+                                #pragma warning disable
                                 [System.Reflect]\npublic static Static* sVars = GameObject.[System.Friend]ModRegisterObject<Self, Static, ModStatic>(ref sVars, ref modSVars, "{name}", \n{events}, "{this.inherit}");\n
                                 [System.Reflect]\npublic static ModStatic* modSVars = null;\n
+                                #pragma warning restore
                                 """);
     }
 }
