@@ -375,10 +375,10 @@ public enum GameLanguages
     public function void(Matrix* dest, Matrix* matrixA, Matrix* matrixB) MatrixMultiply;
     public function void(Matrix* matrix, int32 x, int32 y, int32 z, bool32 setIdentity) MatrixTranslateXYZ;
     public function void(Matrix* matrix, int32 x, int32 y, int32 z) MatrixScaleXYZ;
-    public function void(Matrix* matrix, int16 angle) MatrixRotateX;
-    public function void(Matrix* matrix, int16 angle) MatrixRotateY;
-    public function void(Matrix* matrix, int16 angle) MatrixRotateZ;
-    public function void(Matrix* matrix, int16 x, int16 y, int16 z) MatrixRotateXYZ;
+    public function void(Matrix* matrix, int32 angle) MatrixRotateX;
+    public function void(Matrix* matrix, int32 angle) MatrixRotateY;
+    public function void(Matrix* matrix, int32 angle) MatrixRotateZ;
+    public function void(Matrix* matrix, int32 x, int32 y, int32 z) MatrixRotateXYZ;
     public function void(Matrix* dest, Matrix* matrix) MatrixInverse;
     public function void(Matrix* matDest, Matrix* matSrc) MatrixCopy;
 
