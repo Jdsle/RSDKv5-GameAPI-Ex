@@ -1,6 +1,12 @@
-﻿global using size_t = uint;
+﻿global using size_t = System.UIntPtr;
 
 namespace RSDK;
+
+public unsafe class DelegateTypes
+{
+    public delegate void TakesVoidPtr(void* data);
+    public delegate void TakesVoidPtrI(object o, void* data);
+}
 
 public struct bool32
 {

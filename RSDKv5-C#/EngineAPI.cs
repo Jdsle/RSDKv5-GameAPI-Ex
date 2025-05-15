@@ -4,9 +4,9 @@ namespace RSDK;
 
 public enum Scopes
 {
-    None,
-    Global,
-    Stage,
+    SCOPE_NONE,
+    SCOPE_GLOBAL,
+    SCOPE_STAGE,
 }
 
 public enum GameRegions
@@ -324,7 +324,7 @@ public unsafe struct RSDKFunctionTable
     public delegate* unmanaged<int, int> ASin256;
     public delegate* unmanaged<int, int> ACos256;
     public delegate* unmanaged<int, int, int> Rand;
-    public delegate* unmanaged<int, int, int*, int> RandSeeded;
+    public delegate* unmanaged<int, int, ref int, int> RandSeeded;
     public delegate* unmanaged<int, void> SetRandSeed;
     public delegate* unmanaged<int, int, byte> ATan2;
 
@@ -742,8 +742,8 @@ public unsafe struct EngineInfo
 
 public unsafe class EngineAPI
 {
-    internal static RSDKFunctionTable RSDKTable;
-    internal static APIFunctionTable APITable;
+    public static RSDKFunctionTable RSDKTable;
+    public static APIFunctionTable APITable;
 
 #if RETRO_USE_MOD_LOADER
     public static ModFunctionTable* modTable = null;
@@ -764,7 +764,7 @@ public unsafe class EngineAPI
 
     public static ScreenInfo* screenInfo = null;
 
-    public static void InitEngineInfo(ref EngineInfo info)
+    public static void InitEngineInfo(EngineInfo info)
     {
         RSDKTable = new RSDKFunctionTable();
         APITable = new APIFunctionTable();

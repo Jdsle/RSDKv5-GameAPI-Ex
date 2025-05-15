@@ -1,5 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static RSDK.GameObject;
 
 namespace RSDK
 {
@@ -23,7 +26,7 @@ namespace RSDK
         public IntPtr editorDraw;
         public IntPtr staticLoad;
 
-        public void** staticVars;
+        public Static** staticVars;
         public int entityClassSize;
         public int staticClassSize;
     }
@@ -96,37 +99,38 @@ namespace RSDK
 #endif
     }
 
+    public unsafe interface IEntity
+    {
+        public abstract void Update();
+        public abstract void LateUpdate();
+        public abstract static void StaticUpdate();
+        public abstract void Draw();
+        public abstract void Create(void* data);
+        public abstract static void StageLoad();
+#if RETRO_REV0U
+        public abstract static void StaticLoad(void* sVars);
+#endif
+        public abstract static void Serialize();
+#if GAME_INCLUDE_EDITOR
+        public abstract static void EditorLoad();
+        public abstract void EditorDraw();
+#endif
+    }
+
     public unsafe class GameObject
     {
         public struct Static
         {
-            public ushort classID;
-            public byte active;
+            public UInt16 classID;
+            public Byte active;
 
             public unsafe void EditableVar(VariableTypes type, string name, int offset) => RSDKTable.SetEditableVar((byte)type, name, (byte)classID, offset);
             public unsafe int Count(uint isActive = 0) => RSDKTable.GetEntityCount(classID, isActive);
         }
 
-        public interface IEntity
-        {
-            public abstract void Update();
-            public abstract void LateUpdate();
-            public abstract static void StaticUpdate();
-            public abstract void Draw();
-            public abstract void Create(void* data);
-            public abstract static void StageLoad();
-#if RETRO_REV0U
-            public abstract static void StaticLoad(void* sVars);
-#endif
-            public abstract static void Serialize();
-#if GAME_INCLUDE_EDITOR
-            public abstract static void EditorLoad();
-            public abstract void EditorDraw();
-#endif
-        }
 
-        [StructLayout(LayoutKind.Sequential)]
-        public class Entity : IEntity
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        public struct Entity : IEntity
         {
             // ----------------------
             // Standard Entity Events
@@ -158,7 +162,7 @@ namespace RSDK
             // ----------------
 
 #if RETRO_REV0U
-            private void* vfTable;
+            private IntPtr vfTable;
 #endif
             public Vector2 position;
             public Vector2 scale;
@@ -198,8 +202,8 @@ namespace RSDK
             {
                 active = ActiveFlags.BOUNDS;
                 visible = false;
-                updateRange.x = MathRSDK.TO_FIXED(128);
-                updateRange.y = MathRSDK.TO_FIXED(128);
+                updateRange.x = Macro.TO_FIXED(128);
+                updateRange.y = Macro.TO_FIXED(128);
             }
 
             // can't really do &this, so hoping that sceneInfo->entity will be fine...
@@ -208,7 +212,7 @@ namespace RSDK
             public void Destroy() => RSDKTable.ResetEntity(This<Entity>(), (ushort)DefaultObjects.TYPE_DEFAULTOBJECT, null);
 
             public void Reset(uint type, void* data) => RSDKTable.ResetEntity(This<Entity>(), (ushort)type, data);
-            public void Reset(uint type, int data) => RSDKTable.ResetEntity(This<Entity>(), (ushort)type, MathRSDK.INT_TO_VOID(data));
+            public void Reset(uint type, int data) => RSDKTable.ResetEntity(This<Entity>(), (ushort)type, Macro.INT_TO_VOID(data));
 
             public void Copy(Entity* dst, bool32 clearThis) => RSDKTable.CopyEntity(dst, This<Entity>(), clearThis);
 
@@ -259,50 +263,37 @@ namespace RSDK
         {
             return (Entity*)RSDKTable.CreateEntity((ushort)DefaultObjects.TYPE_DEFAULTOBJECT, data, x, y);
         }
+
         public static Entity* Create(int data, int x, int y)
         {
-            return (Entity*)RSDKTable.CreateEntity((ushort)DefaultObjects.TYPE_DEFAULTOBJECT, MathRSDK.INT_TO_VOID(data), x, y);
+            return (Entity*)RSDKTable.CreateEntity((ushort)DefaultObjects.TYPE_DEFAULTOBJECT, Macro.INT_TO_VOID(data), x, y);
         }
-        public static T* Create<T>(void* data, int x, int y)
-        {
-            /*
-            Type entityType = typeof(T);
-            FieldInfo fieldSVars = entityType.GetField("sVars", BindingFlags.Static | BindingFlags.Public);
-            var sVars = (GameObject.Static*)fieldSVars.GetValue(null);
 
-            return (T*)RSDKTable.CreateEntity(sVars->classID, data, x, y);
-            */
-
-            return null;
-        }
-        /*
-        template<typename T> static inline T *Create(int32 data, int32 x, int32 y)
+        public static T* Create<T>(void* data, int x, int y) where T : unmanaged
         {
-            return (T*)RSDKTable.CreateEntity(T::sVars->classID, INT_TO_VOID(data), x, y);
+            ushort classID = (ushort)RSDKTable.FindObject(typeof(T).Name);
+            return (T*)RSDKTable.CreateEntity(classID, data, x, y);
         }
-        */
+
+        public static T* Create<T>(int data, int x, int y) where T : unmanaged
+        {
+            ushort classID = (ushort)RSDKTable.FindObject(typeof(T).Name);
+            return (T*)RSDKTable.CreateEntity(classID, Macro.INT_TO_VOID(data), x, y);
+        }
 
         public static void Reset(ushort slot, ushort type, void* data) => RSDKTable.ResetEntitySlot(slot, type, data);
-        public static void Reset(ushort slot, ushort type, int data) => RSDKTable.ResetEntitySlot(slot, type, MathRSDK.INT_TO_VOID(data));
-
+        public static void Reset(ushort slot, ushort type, int data) => RSDKTable.ResetEntitySlot(slot, type, Macro.INT_TO_VOID(data));
 
         public static void Reset<T>(ushort slot, void* data)
         {
-            var sVars = (Static*)Managed.GetFieldPtr<Static>(typeof(T), "sVars");
-            RSDKTable.ResetEntitySlot(slot, sVars->classID, data);
+            ushort classID = (ushort)RSDKTable.FindObject(typeof(T).Name);
+            RSDKTable.ResetEntitySlot(slot, classID, data);
         }
+
         public static void Reset<T>(ushort slot, int data)
         {
-            /*
-            FieldInfo sVarsField = typeof(T).GetField("sVars", BindingFlags.Static | BindingFlags.Public);
-            IntPtr sVarsPtr = (IntPtr)sVarsField.GetValue(null);
-            Static* sVars = (Static*)sVarsPtr.ToPointer();
-            */
-
-            // typeof(T).GetField("sVars").Value.GetValue<Static*>(null, var fStatic);
-
-            var sVars = (Static*)Managed.GetFieldPtr<Static>(typeof(T), "sVars");
-            RSDKTable.ResetEntitySlot(slot, sVars->classID, MathRSDK.INT_TO_VOID(data));
+            ushort classID = (ushort)RSDKTable.FindObject(typeof(T).Name);
+            RSDKTable.ResetEntitySlot(slot, classID, Macro.INT_TO_VOID(data));
         }
 
         // ... TODO
@@ -332,57 +323,49 @@ namespace RSDK
             return list;
         }
 
-
-
-
-        public unsafe struct DelegateTypes
-        {
-            public delegate void TakesVoidPtr(void* data);
-        }
-
-        public static unsafe void Register<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] _TypeEntity, _TypeStatic>(ref _TypeStatic* sVars) where _TypeEntity : class
+        public static unsafe void Register<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] E, S>(ref S* sVars, DelegateTypes.TakesVoidPtr create, Action draw, Action update, Action lateupdate) where E : unmanaged where S : unmanaged
         {
             if (Object.registerListCount < Const.OBJECT_COUNT)
             {
-                Type E = typeof(_TypeEntity);
-                Object.registerList[Object.registerListCount] = new ObjectRegistration
-                {
-                    name = E.Name,
-                    update = Managed.GetFunctionPtr<Action>(E, "_Update"),
-                    lateUpdate = Managed.GetFunctionPtr<Action>(E, "_LateUpdate"),
-                    staticUpdate = Managed.GetFunctionPtr<Action>(E, "StaticUpdate"),
-                    draw = Managed.GetFunctionPtr<Action>(E, "_Draw"),
-                    create = Managed.GetFunctionPtr<DelegateTypes.TakesVoidPtr>(E, "_Create"),
-                    stageLoad = Managed.GetFunctionPtr<Action>(E, "StageLoad"),
-#if GAME_INCLUDE_EDITOR
-                    editorLoad = Managed.GetFunctionPtr<Action>(E, "EditorLoad"),
-                    editorDraw = Managed.GetFunctionPtr<Action>(E, "_EditorDraw"),
-#endif
-                    serialize = Managed.GetFunctionPtr<Action>(E, "Serialize"),
-#if RETRO_REV0U
-                    staticLoad = Managed.GetFunctionPtr<DelegateTypes.TakesVoidPtr>(E, "StaticLoad"),
-#endif
-                };
+                Type e = typeof(E);
 
-                fixed (_TypeStatic** pSvars = &sVars)
+                fixed (S** _s = &sVars)
                 {
-                    RSDKTable.RegisterObject(
-                        (void**)pSvars,
-                        Object.registerList[Object.registerListCount].name,
-                        (uint)sizeof(_TypeEntity),
-                        sizeof(_TypeStatic),
-                        Object.registerList[Object.registerListCount].update,
-                        Object.registerList[Object.registerListCount].lateUpdate,
-                        Object.registerList[Object.registerListCount].staticUpdate,
-                        Object.registerList[Object.registerListCount].draw,
-                        Object.registerList[Object.registerListCount].create,
-                        Object.registerList[Object.registerListCount].stageLoad,
-                        Object.registerList[Object.registerListCount].editorLoad,
-                        Object.registerList[Object.registerListCount].editorDraw,
-                        Object.registerList[Object.registerListCount].serialize,
-                        Object.registerList[Object.registerListCount].staticLoad
-                    );
+                    Object.registerList[Object.registerListCount] = new ObjectRegistration
+                    {
+                        name = e.Name,
+                        update = Marshal.GetFunctionPointerForDelegate(update),
+                        lateUpdate = Marshal.GetFunctionPointerForDelegate(lateupdate),
+                        staticUpdate = Managed.GetFunctionPtr<Action>(e, "StaticUpdate"),
+                        draw = Marshal.GetFunctionPointerForDelegate(draw),
+                        create = Marshal.GetFunctionPointerForDelegate(create),
+                        stageLoad = Managed.GetFunctionPtr<Action>(e, "StageLoad"),
+#if GAME_INCLUDE_EDITOR
+                        editorLoad = Managed.GetFunctionPtr<Action>(e, "EditorLoad"),
+                        editorDraw = Managed.GetFunctionPtr<Action>(e, "_EditorDraw"),
+#endif
+                        serialize = Managed.GetFunctionPtr<Action>(e, "Serialize"),
+#if RETRO_REV0U
+                        staticLoad = Managed.GetFunctionPtr<DelegateTypes.TakesVoidPtr>(e, "StaticLoad"),
+#endif
+                        staticVars = (Static**)_s,
+                    };
                 }
+
+                RSDKTable.RegisterObject((void**)Object.registerList[Object.registerListCount].staticVars,
+                                        Object.registerList[Object.registerListCount].name,
+                                        (uint)sizeof(E),
+                                        sizeof(S),
+                                        Object.registerList[Object.registerListCount].update,
+                                        Object.registerList[Object.registerListCount].lateUpdate,
+                                        Object.registerList[Object.registerListCount].staticUpdate,
+                                        Object.registerList[Object.registerListCount].draw,
+                                        Object.registerList[Object.registerListCount].create,
+                                        Object.registerList[Object.registerListCount].stageLoad,
+                                        Object.registerList[Object.registerListCount].editorLoad,
+                                        Object.registerList[Object.registerListCount].editorDraw,
+                                        Object.registerList[Object.registerListCount].serialize,
+                                        Object.registerList[Object.registerListCount].staticLoad);
 
                 ++Object.registerListCount;
             }
@@ -390,19 +373,4 @@ namespace RSDK
             sVars = null;
         }
     }
-
-    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-    public class RSDKDeclareAttribute : Attribute
-    {
-        private static Type _objType;
-
-        public RSDKDeclareAttribute(Type objType)
-        {
-            _objType = objType;
-        }
-
-        // TODO:
-    }
-
-
 }

@@ -26,6 +26,12 @@ public struct Vector2
         y = other.y;
     }
 
+    public unsafe Vector2(Vector2 *other)
+    {
+        x = other->x;
+        y = other->y;
+    }
+
     public Vector2(int x, int y)
     {
         this.x = x;
@@ -37,7 +43,6 @@ public struct Vector2
     // ---------
 
     public unsafe bool32 CheckOnScreen(ref Vector2 range) => RSDKTable.CheckPosOnScreen(ref this, ref range);
-    public unsafe bool32 CheckOnScreen(Vector2 range) => RSDKTable.CheckPosOnScreen(ref this, ref range);
 
     // ---------
     // Operators

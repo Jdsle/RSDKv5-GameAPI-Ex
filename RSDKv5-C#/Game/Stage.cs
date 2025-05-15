@@ -58,7 +58,7 @@ public struct SceneListEntry
 
 public unsafe struct SceneInfo
 {
-    public GameObject.Entity* entity;
+    public IntPtr entity;
     public SceneListEntry* listData;
     public SceneListInfo* listCategory;
     public int timeCounter;
